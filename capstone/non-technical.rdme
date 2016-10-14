@@ -1,0 +1,100 @@
+I started this projectlooking for some way to look at the last reports from Trends in International Mathematics and Science Study (TIMSS). This is a group that looks at the way that math is taught worldwide and then does studies to see the best way to teach math so that the students remember it years after they've stopped going to school. TIMSS does this for Science as well but I am less familiar with that branch of the group.
+
+While I was looking for this data I read an article that summarized results from the Organisation for Economic Co‑operation and Development Programme for International Student Assessment (OECD PISA). I discovered that this was the umbrella under which TIMSS published some of it results. So I dove in and collected the data.
+
+PISA is a group that gives assessments to students ages 15 years 3 months to 16 years 2 months from about 70 different countries. The assessments determine how literate the students are in math, science, language, and finances (starting in 2012). This assessment is given every 3 years starting in 2000. I was able to collect the survey scores from the 2012 assessments.
+
+This data came in the form of over 300 different excel spreadsheets about 250 of them had more than one sheet in the file. I decided that I would start by importing all of the spreadsheets into pandas dataframes and clean all of them with one function. I then followed these steps.
+
+1. Pulled all of the excel files into pandas dataframe
+2. Left out first row because it was irrelevant
+3. Combined 2nd and 3rd rows to make the headers more descriptive and understandable
+4. Wanted to merge all dataframes together using country column as the index but had the problem of how do I know which question goes with which header?
+5. Added question ID and sheet name to the beginning of every header
+6. Merged all the data
+7. Got dataframe with 65 rows and 4,095 columns
+8. Attempted to use logistic regression.
+	a. Used the countries as target y.
+	b. Used headers that had words “none”, “once”, “twice”, “four”, and “five” as my X.
+	c. I got 1,194 columns in my X and I could not get this model to work
+
+There were many problems with the way that I went about this but the main ones are:
+
+1. Apparently not all my headers got cleaned
+2. Half of the columns in my X were click logs not assessment results. 
+
+I realized I needed to start over.
+
+So I put on my thinking cap this time and I found a dictionary that explained what each of the spreadsheet were. I then picked ouf 6 quesions to focus on and wrote a hypothesis. I forgot to do that the first time around.
+
+### Hypothesis 1:
+
+Use the Parent questionnaire question about how much time spent with child as target
+Compare with Student questionnaire questions
+Q8: How often are you tardy?
+Q9: How often do you skip one class?
+Q10: How often do you skip an entire day?
+Q29:How many hours do you typically spend per week attending in the following subjects?
+Q30: Thinking about all school subjects: on average, how many hours do you spend each week on the following?
+Q41: Thinking about studying mathematics: to what extent do you agree with the following statements?
+
+As I began to clean out the data starting with the parent questionnaire I discovered a few problems.
+
+1. There 28 different spreadsheets with 7 headers each
+2. Only 12 countries participated in the Parent Survey
+	ie 53 countries had no responses but they were included on each spreadsheet.
+
+So I rewrote my hypothesis.
+
+### Hypothesis 2:
+
+Use “None” as 0 and rest as 1
+Q8: How often are you tardy?
+Q9:How often do you skip one class?
+Q10:How often do you skip an entire day?
+
+Compare to these
+Q29:How many hours do you typically spend per week attending in the following subjects?
+Q30: Thinking about all school subjects: on average, how many hours do you spend each week on the following?
+Q41: Thinking about studying mathematics: to what extent do you agree with the following statements?
+
+Then apply logistic regression.
+
+This did not work either because Q30 and Q41 were written responses not multiple choice, because of this I didn’t know how to interpret these spreadsheets. So instead of scrapping what I had done I decided to find some questions to replace Q30 and Q41. 
+
+### Hypothesis 3:
+
+Use “None” as 0 and rest as 1
+Q8: How often are you tardy?
+Q9:How often do you skip one class?
+Q10:How often do you skip an entire day?
+
+Compare to these
+Q29:How many hours do you typically spend per week attending in the following subjects?
+Q50: Thinking about the teachers at your school: to what extent do you agree with the following statements?
+
+At this point in time I realized that I only had 6 days until I needed to present something and I did not have time to finish familiarizing myself with the data and apply a model so I set this hypothesis aside and simplified what I planned to do.
+
+I planned to:
+
+1. Map out the countries that participated.
+2. Use only Q8, Q9, and Q10:
+3. Look at the variance in the questions by countries.
+4. Try to make bar graphs or histograms of the grouped by country answers for these three questions.
+5. Group the countries together by location.
+6. Look at the variance in the questions by the grouped locations.
+7. Try to make bar graphs or histograms of the grouped by locations.
+8. Make presentation
+
+I then made a heat map of all of the students who took the assessment around the world to see if I could find clusters of countries to compare.
+
+I then finished cleaning Q8, Q9, and Q10 and created a stacked bar graph to see attendance of students in the countries within the 2 weeks prior to the assesment. Isreal and Turkey seemed to be the worst just from looking at the graphs.
+
+Next I plan to:
+
+1. Find way to group by countries by location then do more comparisons
+2. Explore the responses given by the teachers
+3. Explore the responses given by the parents
+4. Apply some regression and classification
+5. Look at the second and third student surveys
+
